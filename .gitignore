@@ -9,3 +9,5 @@ target
 dump.rdb
 *.txt
 *.log
+.idea/
+core.iml
