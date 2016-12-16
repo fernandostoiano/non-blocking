@@ -1,6 +1,5 @@
 package br.com.non.blocking.core.app;
 
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import org.springframework.stereotype.Component;
@@ -63,23 +62,21 @@ public class ApplicationService {
 			this.dataSourceResult = result;
 		});
 		
-		CompletableFuture<Result> myReturn = appClients
-				.thenApply(this::getResultAppClients)
-				.thenCompose(this::joinDataSourceResult)
-				.thenApply(strings -> new Result(strings));
+		this.otherProcess();
+		
+		CompletableFuture<Result> myReturn = CompletableFuture.supplyAsync(() -> new Result(this.appClientsResult, this.dataSourceResult));
 		
 		return myReturn;
 	}
-	
-	private CompletableFuture<String> getResultAppClients(String appClients) {
+
+	private void otherProcess() {
+		try {
+			Thread.sleep(2500);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
-		
-		return null;
 	}
 	
-	private CompletableFuture<List<String>> joinDataSourceResult(CompletableFuture<String> appClients) {
-		
-		
-		return null;
-	}
-}
+}	

@@ -4,13 +4,16 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.context.request.async.DeferredResult;
 
 import br.com.non.blocking.core.app.ApplicationService;
+import br.com.non.blocking.core.app.Result;
 import br.com.non.blocking.core.app.TimeUtil;
 
 @Controller
@@ -49,9 +52,9 @@ public class ApplicationController {
 	
 	@RequestMapping(value = "/get",
             method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public DeferredResult<String> get() {
+	public DeferredResult<ResponseEntity<Result>> get() {
 		
-		DeferredResult<String> deferredResult = new DeferredResult<>();
+		 DeferredResult<ResponseEntity<Result>> deferredResult = new DeferredResult<>();
 		
 		CompletableFuture.supplyAsync(() -> applicationService.get(), executor)
 				.whenCompleteAsync((response, e) -> {
@@ -60,7 +63,7 @@ public class ApplicationController {
 						return null;
 					});
 					response.thenAccept(result -> {
-						deferredResult.setResult(result);
+						deferredResult.setResult(new ResponseEntity<>(result, HttpStatus.OK));
 					});
 				});
 		
